@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MathNet.Numerics" Version="4.9.0" />
+    <PackageReference Include="NLog" Version="4.6.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SimpleSimplex\SimpleSimplex.csproj" />
+  </ItemGroup>
+
+</Project>
