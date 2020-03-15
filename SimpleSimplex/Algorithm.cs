@@ -60,10 +60,9 @@ namespace SimpleSimplex
                 _log.Info($"Leaving column: {leavingColumn}");
                 //modify basis and continue
                 currentIteration = ExchangeBasisColumns(model, currentIteration, enteringColumn, leavingColumn);
+                _log.Info(Environment.NewLine + PrintIteration(model, currentIteration));
             }
-
             _log.Info($"Final Objective is: {Math.Round(currentIteration.ObjectiveValue, 2)}");
-
         }
 
         private Iteration ExchangeBasisColumns(LpModel model, Iteration previous, int entering, int leaving)
@@ -135,6 +134,27 @@ namespace SimpleSimplex
             }
             return Vector<double>.Build.DenseOfArray(c);
         }
+               
+        public string PrintIteration(LpModel model,Iteration iteration)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            //constraint columns:
+            var basisInverse = GetColumnSubset(model, iteration.BasicColumns).Inverse();
+            var constraintColumns = basisInverse.Multiply(model.A);
+            var rhs = basisInverse.Multiply(model.b);
+
+            for (int i = 0; i < constraintColumns.RowCount; i++)
+            {
+                var row = constraintColumns.Row(i);
+                for (int j = 0; j < row.Count; j++)
+                {
+                    sb.Append($" {row[j].ToString("N2")} |");
+                }
+                sb.Append($"| {rhs[i].ToString("N2")}\n");
+            }
+            return sb.ToString();
+        }
 
     }
 
@@ -160,8 +180,7 @@ namespace SimpleSimplex
         internal double ObjectiveValue { get; set; }
 
     }
-
-
+    
     public class LpModel
     {
         public Vector<double> C { get; set; }
@@ -169,5 +188,6 @@ namespace SimpleSimplex
         public Matrix<double> A { get; set; }
 
         public Vector<double> b { get; set; }
+
     }
 }
